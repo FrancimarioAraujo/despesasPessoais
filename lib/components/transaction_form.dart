@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 
-class TransactionForm extends StatelessWidget {
-  final titleController = TextEditingController();
-  final valueController = TextEditingController();
-
+class TransactionForm extends StatefulWidget {
   final void Function(String, double) addTransaction;
 
   TransactionForm(this.addTransaction);
+
+  @override
+  _TransactionFormState createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final titleController = TextEditingController();
+
+  final valueController = TextEditingController();
+
+  _onSubmitForm() {
+    final title = titleController.text;
+    final value = double.tryParse(valueController.text) ?? 0.0;
+
+    if (title.isEmpty || value <= 0) {
+      return;
+    }
+
+    widget.addTransaction(title, value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +35,14 @@ class TransactionForm extends StatelessWidget {
           children: [
             TextField(
               controller: titleController,
+              onSubmitted: (_) => _onSubmitForm(),
               decoration: InputDecoration(
                 labelText: "Titulo:",
               ),
             ),
             TextField(
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (_) => _onSubmitForm(),
               controller: valueController,
               decoration: InputDecoration(
                 labelText: "Valor (R\$): ",
@@ -32,10 +52,7 @@ class TransactionForm extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () {
-                    addTransaction(titleController.text,
-                        double.tryParse(valueController.text) ?? 0.0);
-                  },
+                  onPressed: _onSubmitForm,
                   child: Text(
                     "Nova Transação",
                     style: TextStyle(
