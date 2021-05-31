@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:despesaspessoais/components/chart.dart';
 import 'package:despesaspessoais/components/transaction_form.dart';
 import 'package:despesaspessoais/components/transaction_list.dart';
 import 'package:flutter/material.dart';
@@ -58,16 +59,38 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   final List<Transaction> _transactions = [
-    // Transaction(
-    //     id: "t1",
-    //     title: "Novo Tênis de Corrida",
-    //     date: DateTime.now(),
-    //     value: 310),
-    // Transaction(
-    //     id: "t2", title: "Conta de Luz", date: DateTime.now(), value: 211),
-    // Transaction(
-    //     id: "t3", title: "Computador", date: DateTime.now(), value: 1000),
+    Transaction(
+        id: "t1",
+        title: "Novo Tênis de Corrida",
+        date: DateTime.now().subtract(
+          Duration(days: 3),
+        ),
+        value: 310),
+    Transaction(
+        id: "t2",
+        title: "Conta de Luz",
+        date: DateTime.now().subtract(
+          Duration(days: 4),
+        ),
+        value: 211),
+    Transaction(
+        id: "t3",
+        title: "Computador",
+        date: DateTime.now().subtract(
+          Duration(days: 33),
+        ),
+        value: 1000),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((tr) {
+      return tr.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
 
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
@@ -92,13 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.blue,
-                child: Text("Gráfico"),
-              ),
-            ),
+            Chart(_recentTransactions),
             Column(
               children: [
                 TransactionList(
