@@ -1,3 +1,4 @@
+import 'package:despesaspessoais/components/chart_bar.dart';
 import 'package:despesaspessoais/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -31,9 +32,15 @@ class _ChartState extends State<Chart> {
       }
 
       return {
-        'day': DateFormat().format(weekDay)[0],
+        'day': DateFormat().add_E().format(weekDay)[0],
         'value': totalSum,
       };
+    });
+  }
+
+  double get _weekTotalValue {
+    return groupedTransactions.fold(0.0, (sum, tr) {
+      return sum + tr['value'];
     });
   }
 
@@ -42,10 +49,21 @@ class _ChartState extends State<Chart> {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
-      child: Row(
-        children: groupedTransactions.map((tr) {
-          return Text("${tr['day']} : ${tr['value']}");
-        }).toList(),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTransactions.map((tr) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                label: tr['day'],
+                value: tr['value'],
+                percentage: (tr['value'] as double) / _weekTotalValue,
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
