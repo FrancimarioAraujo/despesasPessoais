@@ -20,8 +20,11 @@ class _ChartBarState extends State<ChartBar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        FittedBox(
-          child: Text('${widget.value.toStringAsFixed(2)}'),
+        Container(
+          height: 20,
+          child: FittedBox(
+            child: Text('${widget.value.toStringAsFixed(2)}'),
+          ),
         ),
         SizedBox(height: 5),
         Container(
